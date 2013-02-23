@@ -28,8 +28,8 @@ int 10h     ; set it!
 ;E      1110      yellow
 ;F      1111      white
 
-jmp code
-cadre:
+jmp cadre ;pixel pour pas ce faire chier
+var:
 
 ; dimensions of the rectangle:
 ; width: 10 pixels
@@ -39,7 +39,7 @@ w equ 319
 h equ 199
 
 
-code:
+cadre:
 ; draw upper line:
 
     mov cx, 0+w  ; column
@@ -93,24 +93,1112 @@ u2: mov ah, 0ch    ; put pixel
 
 ;ICI ON fait les pixels
 pixel:
+;10x10
+mov cx, 08  ; column
+mov dx, 10  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 11  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 12  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 13  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 14  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 15  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 16  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 17  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 18  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 19  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 20  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 08  ; column
+mov dx, 22  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 10  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 11  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 12  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 13  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 14  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 15  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 16  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 17  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 18  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 19  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 20  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 09  ; column
+mov dx, 22  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+;colum 10
+mov cx, 10  ; column
+mov dx, 10  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 10  ; column
+mov dx, 11  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 10  ; column
+mov dx, 12  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 10  ; column
+mov dx, 13  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 10  ; column
+mov dx, 14  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 10  ; column
+mov dx, 15  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 10  ; column
+mov dx, 16  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 10  ; column
+mov dx, 17  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 10  ; column
+mov dx, 18  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 10  ; column
+mov dx, 19  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
 
 mov cx, 10  ; column
 mov dx, 20  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 10  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 10  ; column
+mov dx, 22  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+;column11
+
+
+mov cx, 11  ; column
+mov dx, 10  ; row
 mov al, 1101b  ; red
 mov ah, 0ch ; put pixel
 int 10h
 
-mov cx, 9  ; column
-mov dx, 19  ; row
+mov cx, 11  ; column
+mov dx, 11  ; row
 mov al, 1101b  ; red
 mov ah, 0ch ; put pixel
 int 10h
 
-mov cx, 8  ; column
+mov cx, 11  ; column
+mov dx, 12  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 11  ; column
+mov dx, 13  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 11  ; column
+mov dx, 14  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 11  ; column
+mov dx, 15  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 11  ; column
+mov dx, 16  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 11  ; column
+mov dx, 17  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 11  ; column
 mov dx, 18  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 11  ; column
+mov dx, 19  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 11  ; column
+mov dx, 20  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 11  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 11  ; column
+mov dx, 22  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+;colunm 12
+
+mov cx, 12  ; column
+mov dx, 10  ; row
 mov al, 1101b  ; red
 mov ah, 0ch ; put pixel
 int 10h
+
+mov cx, 12  ; column
+mov dx, 11  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 12  ; column
+mov dx, 12  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 12  ; column
+mov dx, 13  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 12  ; column
+mov dx, 14  ; row
+mov al, 0000b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 12  ; column
+mov dx, 15  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 12  ; column
+mov dx, 16  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 12  ; column
+mov dx, 17  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 12  ; column
+mov dx, 18  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 12  ; column
+mov dx, 19  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 12  ; column
+mov dx, 20  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 12  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 12  ; column
+mov dx, 22  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+;colunm 13
+
+mov cx, 13  ; column
+mov dx, 10  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 11  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 12  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 13  ; row
+mov al, 0000b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 14  ; row
+mov al, 0000b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 15  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 16  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 17  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 18  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 19  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 20  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 21  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 13  ; column
+mov dx, 22  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+;colunm 14
+
+mov cx, 14  ; column
+mov dx, 10  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 11  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 12  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 13  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 14  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 15  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 16  ; row
+mov al, 0000b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 17  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 18  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 19  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 20  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 14  ; column
+mov dx, 22  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+;colunm 15
+
+mov cx, 15  ; column
+mov dx, 10  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 11  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 12  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 13  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 14  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 15  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 16  ; row
+mov al, 0000b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 17  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 18  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 19  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 20  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 15  ; column
+mov dx, 22  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+;colunm 16
+
+mov cx, 16  ; column
+mov dx, 10  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 11  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 12  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 13  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 14  ; row
+mov al, 0000b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 15  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 16  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 17  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 18  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 19  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 20  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 21  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 16  ; column
+mov dx, 22  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+;colunm 17
+
+mov cx, 17  ; column
+mov dx, 10  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 11  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 12  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 13  ; row
+mov al, 0000b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 14  ; row
+mov al, 0000b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 15  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 16  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 17  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 18  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 19  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 20  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 17  ; column
+mov dx, 22  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+;colunm 18
+
+mov cx, 18  ; column
+mov dx, 10  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 11  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 12  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 13  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 14  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 15  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 16  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 17  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 18  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 19  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 20  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 18  ; column
+mov dx, 22  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+;colunm 19
+
+mov cx, 19  ; column
+mov dx, 10  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 11  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 12  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 13  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 14  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 15  ; row
+mov al, 1101b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 16  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 17  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 18  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 19  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 20  ; row
+mov al, 1100b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 19  ; column
+mov dx, 22  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 10  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 11  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 12  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 13  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 14  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 15  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 16  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 17  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 18  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 19  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 20  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 20  ; column
+mov dx, 22  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 10  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 11  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 12  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 13  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 14  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 15  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 16  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 17  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 18  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 19  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 20  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 21  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
+mov cx, 21  ; column
+mov dx, 22  ; row
+mov al, 0111b  ; red
+mov ah, 0ch ; put pixel
+int 10h
+
 
 ;jmp     game_loop
 
