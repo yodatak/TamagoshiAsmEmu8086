@@ -10,10 +10,10 @@ mov al, 13h ; mode 13h = 320x200 pixels, 256 colors.
 int 10h     ; set it!
 
 
-mov cx, 10
-mov dx, 20
-lea si, sprite_pikamini
-call show_sprite
+mov cx, 10 ;position x du sprite
+mov dx, 20 ;position y du sprite
+lea si, sprite_pikamini ;adresse du sprite
+call show_sprite ;appel de la procedure qui affiche le sprite
 
 
 ; pause the screen for dos compatibility:
@@ -117,7 +117,7 @@ show_sprite PROC
     
     mov ax, w.[si-4] ;sprite_w
     mul w.[si-2] ;sprite_h
-    mov bx, ax
+    mov bx, ax ;nombre total de pixels
                       
     mov dx, [di+0] ;sprite_y
     add dx, w.[si-2] ;sprite_h
