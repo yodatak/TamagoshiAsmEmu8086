@@ -7,6 +7,7 @@ org  100h
 
 mov ah, 0   ; set display mode function.
 mov al, 13h ; mode 13h = 320x200 pixels, 256 colors.
+mov bx, 0   ; disable blinking. 
 int 10h     ; set it!
 
 
@@ -17,13 +18,22 @@ call show_sprite ;appel de la procedure qui affiche le sprite
 
 
 ; pause the screen for dos compatibility:
-
+Restart:
 ;wait for keypress
-mov ah,00
-int 16h			
+mov ah,00h ;
+int 16h ;On utilise l'interuption 16h pour le clavier		
+CMP AX,4B00h ;code de ASCII pour la touche ESC
+JNE Restart ;On saute a la partie restart  
+ret ; Touche Entre enfonce on quite le jeu
 
-	
-ret
+lol:
+;wait for keypress
+mov ah,00h ;
+int 16h ;On utilise l'interuption 16h pour le clavier		
+CMP AX,4B00h ;code de ASCII pour la touche ESC
+JNE lol ;On saute a la partie restart  
+ret ; Touche Entre enfonce on quite le jeu
+
 
 ;#afficher un pixel#
 ;
