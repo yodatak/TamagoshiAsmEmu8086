@@ -15,6 +15,11 @@ local.properties
 .classpath
 .settings/
 .loadpath
+*~asm
+*.debug
+*.list
+*.symbol
+*.com
 
 # External tool builders
 .externalToolBuilders/
