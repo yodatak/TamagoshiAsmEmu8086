@@ -5,10 +5,57 @@ name "pixel"
 
 org  100h
 
+
+; jump over data section:
+jmp     start
+
+
+
+
+; welcome message
+msg 	db "==== Allez Viens ====", 0dh,0ah
+	db "On Aime faire de la merde", 0dh,0ah
+	db "This project is not designed to run on the emulator", 0dh,0ah
+	db "because it requires relatively fast video card and cpu.", 0dh,0ah, 0ah
+	
+	db "if you want to see how this game really works,", 0dh,0ah
+	db "run it on a dosbox (click external->run from the menu).", 0dh,0ah, 0ah
+	
+	db "you can control the pockemon using arrow keys", 0dh,0ah	
+	db "all .", 0dh,0ah, 0ah
+	
+	db "press esc to exit.", 0dh,0ah
+	db "====================", 0dh,0ah, 0ah
+	db "press any key to start...$"
+
+; ------ code section ------
+
+start:
+
+; print welcome message:
+mov dx, offset msg
+mov ah, 9 
+int 21h
+
+
+; wait for any key:
+mov ah, 00h
+int 16h
+
+
+; hide text cursor:
+mov     ah, 1
+mov     ch, 2bh
+mov     cl, 0bh
+int     10h      
+
+; ------ Pixel section ------
+
 mov ah, 0   ; set display mode function.
 mov al, 13h ; mode 13h = 320x200 pixels, 256 colors.
 mov bx, 0   ; disable blinking. 
 int 10h     ; set it!
+
 
 
 mov cx, 10 ;position x du sprite
