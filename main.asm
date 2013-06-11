@@ -11,44 +11,19 @@ jmp     start
 
 ; ------ data section ------
 
-s_size  equ     7
-
-; the snake coordinates
-; (from head to tail)
-; low byte is left, high byte
-; is top - [top, left]
-snake dw s_size dup(0)
-
-tail    dw      ?
-
-; direction constants
-;          (bios key codes):
-left    equ     4bh
-right   equ     4dh
-up      equ     48h
-down    equ     50h
-
-; current snake direction:
-cur_dir db      right
-
 wait_time dw    0
 
 
-; welcome message
-msg 	db "==== Allez Viens ====", 0dh,0ah
-	db "On Aime faire de la merde", 0dh,0ah
-	db "This project is not designed to run on the emulator", 0dh,0ah
-	db "because it requires relatively fast video card and cpu.", 0dh,0ah, 0ah
-	
-	db "if you want to see how this game really works,", 0dh,0ah
-	db "run it on a dosbox (click external->run from the menu).", 0dh,0ah, 0ah
-	
-	db "you can control the pockemon using arrow keys", 0dh,0ah	
-	db "all .", 0dh,0ah, 0ah
-	
-	db "press esc to exit.", 0dh,0ah
+; message de bienvenue
+msg db "==== TamagoB1 ====", 0dh,0ah
+	db "Ce projet ne peut tourner dans l'emulateur", 0dh,0ah
+	db "car il requiert une vitesse d'execution que celui-ci ne peut fournir", 0dh,0ah, 0ah
+	db "Si vous souhaitez faire tourner ce jeu,", 0dh,0ah
+	db "utilisez le fichier run.bat fourni avec le jeu.", 0dh,0ah, 0ah
+	db "vous pouvez controler le pet avec les fleches <^v>", 0dh,0ah		
+	db "appuyez sur Esc pour quitter.", 0dh,0ah
 	db "====================", 0dh,0ah, 0ah
-	db "press any key to start...$"
+	db "appuyez sur n'importe quelle touche pour demarrer...$"
 
 ; ------ code section ------
 
@@ -60,38 +35,40 @@ mov ah, 9
 int 21h
 
 
-; wait for any key:
+;on attend une touche
+wait_for_key_press:
+mov ah, 01h
+int 16h
+jz  wait_for_key_press
 
+mov ah, 00h
+int 16h ;on récupère la touche
 
-mov     ah, 00h
-int     16h
-je      draw
+cmp al, 1bh    ;touche échap ?
+jne game_init  ;on lance le jeu
 
-cmp     al, 1bh    ; esc - key?
-je      stop_game  ;  go to menu
+int 20h ;on quitte le jeu
        
-       
-    
 
-
-
-
-
-draw:
+game_init:
 ; hide text cursor:
-mov     ah, 1
-mov     ch, 2bh
-mov     cl, 0bh
-int     10h      
+;mov     ah, 1
+;mov     ch, 2bh
+;mov     cl, 0bh
+;int     10h      
 
-; ------ Pixel section ------
+; ------ passage en mode pixel ------
 
 mov ah, 0   ; set display mode function.
 mov al, 13h ; mode 13h = 320x200 pixels, 256 colors.
 mov bx, 0   ; disable blinking. 
 int 10h     ; set it!  
 
-game_init:
+
+lea si, sprite_pikamini
+mov sprite_pet, si
+mov sprite_pet_position_x, 10
+mov sprite_pet_position_y, 10
 
 lea si, sprite_happyness_normal
 mov sprite_happyness, si 
@@ -102,11 +79,24 @@ mov sprite_hunger, si
 lea si, sprite_discipline_normal
 mov sprite_discipline, si
 
+lea si, sprite_buttons_normal
+mov sprite_buttons, si
+
 jmp game_loop
+
+;========= variables de fonctionnement DEBUT ============= 
+ 
+sprite_pet DW ?
+sprite_pet_position_x DW ?
+sprite_pet_position_y DW ?
 
 sprite_happyness DW ?
 sprite_hunger DW ?
 sprite_discipline DW ?
+
+sprite_buttons DW ?
+
+;========= variables de fonctionnement  FIN  =============
 
 game_loop: 
 
@@ -115,9 +105,9 @@ mov dx, 1
 lea si, sprite_colors
 call show_sprite
 
-mov cx, 10 ;position x du sprite
-mov dx, 20 ;position y du sprite
-lea si, sprite_pikamini ;adresse du sprite
+mov cx, sprite_pet_position_x ;position x du sprite
+mov dx, sprite_pet_position_y ;position y du sprite
+mov si, sprite_pet ;adresse du sprite
 call show_sprite ;appel de la procedure qui affiche le sprite        
 
 mov cx, 120 ;position x du sprite
@@ -135,6 +125,11 @@ mov dx, 70 ;position y du sprite
 mov si, sprite_discipline ;adresse du sprite
 call show_sprite ;appel de la procedure qui affiche le sprite
 
+mov cx, 50 ;position x du sprite
+mov dx, 100 ;position y du sprite
+mov si, sprite_buttons ;adresse du sprite
+call show_sprite ;appel de la procedure qui affiche le sprite
+
 
 check_for_key:
 
@@ -143,47 +138,89 @@ mov     ah, 01h
 int     16h
 jz      no_key
 
-mov     ah, 00h
-int     16h
-
-cmp     al, 1bh    ; esc - key?
-je      start  ;  go to menu
-
-;mov     cur_dir, ah
-
-
-
-
-
+call handle_events
 
 no_key:
-
-
 
 ; === wait a few moments here:
 ; get number of clock ticks
 ; (about 18 per second)
 ; since midnight into cx:dx
-mov     ah, 00h
-int     1ah
-cmp     dx, wait_time
-jb      check_for_key
-add     dx, 4
-mov     wait_time, dx
+;mov     ah, 00h
+;int     1ah
+;cmp     dx, wait_time
+;jb      check_for_key
+;add     dx, 4
+;mov     wait_time, dx
 
 
 ; === eternal game loop:
 jmp     game_loop
 
-stop_game:
-
-; show cursor back:
-mov     ah, 1
-mov     ch, 0bh
-mov     cl, 0bh
-int     10h
-
 ret
+
+
+
+handle_events PROC    
+    
+    mov ah, 00h
+    int 16h
+        
+    cmp al, 1bh    ; touche échap
+    je  key_esc 
+                                   
+    cmp ah, 4Bh    ; fleche gauche
+    je  key_left
+        
+    cmp ah, 4Dh    ; fleche droite
+    je  key_right   
+        
+    cmp ah, 48h    ; fleche haut
+    je  key_up
+        
+    cmp ah, 50h    ; fleche bas
+    je  key_down
+    
+    ret 
+    
+;gestion en fonction de la touche :    
+    
+    key_esc:
+    int 20h ;on arrête le jeu
+    
+    key_left:
+  
+    lea si, sprite_buttons_left
+    mov sprite_buttons, si  
+         
+    ret
+    
+    key_right:
+    
+    lea si, sprite_buttons_right
+    mov sprite_buttons, si 
+          
+    ret
+    
+    key_up:
+    
+    lea si, sprite_buttons_up 
+    mov sprite_buttons, si        
+    
+    ret
+                                
+    
+    key_down:
+    
+    lea si, sprite_buttons_down
+    mov sprite_buttons, si  
+    
+    ret 
+  
+handle_events ENDP
+
+
+
 
 ;#afficher un pixel#
 ;
@@ -264,9 +301,15 @@ include tools/hunger_bad.txt
 
 include tools/discipline_good.txt
 include tools/discipline_normal.txt
-include tools/discipline_bad.txt
+include tools/discipline_bad.txt 
 
 
+include tools/buttons_normal.txt
+include tools/buttons_left.txt
+include tools/buttons_right.txt
+include tools/buttons_up.txt
+include tools/buttons_down.txt
+                       
 
 
 ;#afficher un sprite#

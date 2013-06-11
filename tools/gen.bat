@@ -18,3 +18,10 @@ SpriteMaker.exe "../images/hunger_bad.png" "sprite_hunger_bad" > hunger_bad.txt
 SpriteMaker.exe "../images/discipline_good.png" "sprite_discipline_good" > discipline_good.txt
 SpriteMaker.exe "../images/discipline_normal.png" "sprite_discipline_normal" > discipline_normal.txt
 SpriteMaker.exe "../images/discipline_bad.png" "sprite_discipline_bad" > discipline_bad.txt
+
+::les sprites des boutons
+SpriteMaker.exe "../images/buttons_normal.png" "sprite_buttons_normal" > buttons_normal.txt
+SpriteMaker.exe "../images/buttons_left.png" "sprite_buttons_left" > buttons_left.txt
+SpriteMaker.exe "../images/buttons_right.png" "sprite_buttons_right" > buttons_right.txt
+SpriteMaker.exe "../images/buttons_up.png" "sprite_buttons_up" > buttons_up.txt
+SpriteMaker.exe "../images/buttons_down.png" "sprite_buttons_down" > buttons_down.txt
