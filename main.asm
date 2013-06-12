@@ -21,7 +21,11 @@ msg db "==== TamagoB1 ====", 0dh,0ah
 	db "Si vous souhaitez faire tourner ce jeu,", 0dh,0ah
 	db "utilisez le fichier run.bat fourni avec le jeu.", 0dh,0ah, 0ah
 	db "vous pouvez controler le pet avec les fleches <^v>", 0dh,0ah		
-	db "appuyez sur Esc pour quitter.", 0dh,0ah
+	db "^   JOUER: deviner si le pet va aller a gauche < ou a droite >", 0dh,0ah
+	db "v   REPRIMANDER", 0dh,0ah
+	db "<   DONNER UN SNACK", 0dh,0ah
+	db ">   DONNER UN REPAS", 0dh,0ah
+	db "Esc QUITTER", 0dh,0ah
 	db "====================", 0dh,0ah, 0ah
 	db "appuyez sur n'importe quelle touche pour demarrer...$"
 
@@ -91,9 +95,9 @@ sprite_buttons_position_x equ 50
 sprite_buttons_position_y equ 100
 
 
-pet_happyness DW 1
-pet_hunger DW 1
-pet_discipline DW 1 
+pet_happyness DW 2
+pet_hunger DW 2
+pet_discipline DW 2 
 
 
 reprimand_is_justified DW 0
@@ -258,7 +262,19 @@ play_with_the_pet ENDP
 
 
 reprimand_the_pet PROC
+    cmp reprimand_is_justified, 1
+    je reprimand_the_pet_justified
     
+    reprimand_the_pet_unjustified:
+        mov pet_happyness, 1
+        sub pet_discipline, 1
+        call update_pet_states_sprites  
+    ret    
+    
+    reprimand_the_pet_justified:
+        sub pet_happyness, 1
+        add pet_discipline, 1         
+        call update_pet_states_sprites
     ret
 reprimand_the_pet ENDP
 
@@ -270,16 +286,15 @@ update_pet_states_sprites PROC
     ;====happyness====
     
     update_pet_states_sprites_happyness:
-        cmp pet_happyness, 0
-        je update_pet_states_sprites_happyness_bad
-        cmp pet_happyness, 1
-        je update_pet_states_sprites_happyness_normal
         cmp pet_happyness, 2
-        je update_pet_states_sprites_happyness_good
+        je update_pet_states_sprites_happyness_normal
+        jb update_pet_states_sprites_happyness_bad
+        ja update_pet_states_sprites_happyness_good
         
     ret
     
     update_pet_states_sprites_happyness_bad:
+        mov pet_happyness, 1
         mov cx, sprite_happyness_position_x ;position x du sprite
         mov dx, sprite_happyness_position_y ;position y du sprite
         lea si, sprite_happyness_bad ;adresse du sprite
@@ -296,6 +311,7 @@ update_pet_states_sprites PROC
     jmp update_pet_states_sprites_hunger 
         
     update_pet_states_sprites_happyness_good:
+        mov pet_happyness, 3
         mov cx, sprite_happyness_position_x ;position x du sprite
         mov dx, sprite_happyness_position_y ;position y du sprite
         lea si, sprite_happyness_good ;adresse du sprite
@@ -306,16 +322,16 @@ update_pet_states_sprites PROC
     ;====hunger====
     
     update_pet_states_sprites_hunger:
-        cmp pet_hunger, 0
-        je update_pet_states_sprites_hunger_bad
-        cmp pet_hunger, 1
-        je update_pet_states_sprites_hunger_normal
         cmp pet_hunger, 2
-        je update_pet_states_sprites_hunger_good
+        je update_pet_states_sprites_hunger_normal
+        jb update_pet_states_sprites_hunger_bad
+        ja update_pet_states_sprites_hunger_good
         
     ret
     
     update_pet_states_sprites_hunger_bad:
+        mov pet_hunger, 1
+        
         mov cx, sprite_hunger_position_x ;position x du sprite
         mov dx, sprite_hunger_position_y ;position y du sprite
         lea si, sprite_hunger_bad ;adresse du sprite
@@ -332,6 +348,8 @@ update_pet_states_sprites PROC
     jmp update_pet_states_sprites_discipline 
         
     update_pet_states_sprites_hunger_good:
+        mov pet_hunger, 3
+        
         mov cx, sprite_hunger_position_x ;position x du sprite
         mov dx, sprite_hunger_position_y ;position y du sprite
         lea si, sprite_hunger_good ;adresse du sprite
@@ -342,16 +360,16 @@ update_pet_states_sprites PROC
     ;====discipline====
     
     update_pet_states_sprites_discipline:
-        cmp pet_discipline, 0
-        je update_pet_states_sprites_discipline_bad
-        cmp pet_discipline, 1
+        cmp pet_discipline, 2                      
         je update_pet_states_sprites_discipline_normal
-        cmp pet_discipline, 2
-        je update_pet_states_sprites_discipline_good
+        jb update_pet_states_sprites_discipline_bad
+        ja update_pet_states_sprites_discipline_good
         
     ret
     
     update_pet_states_sprites_discipline_bad:
+        mov pet_discipline, 1
+        
         mov cx, sprite_discipline_position_x ;position x du sprite
         mov dx, sprite_discipline_position_y ;position y du sprite
         lea si, sprite_discipline_bad ;adresse du sprite
@@ -368,6 +386,8 @@ update_pet_states_sprites PROC
     ret 
         
     update_pet_states_sprites_discipline_good:
+        mov pet_discipline, 3
+        
         mov cx, sprite_discipline_position_x ;position x du sprite
         mov dx, sprite_discipline_position_y ;position y du sprite
         lea si, sprite_discipline_good ;adresse du sprite
