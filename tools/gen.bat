@@ -25,3 +25,4 @@ SpriteMaker.exe "../images/buttons_left.png" "sprite_buttons_left" > buttons_lef
 SpriteMaker.exe "../images/buttons_right.png" "sprite_buttons_right" > buttons_right.txt
 SpriteMaker.exe "../images/buttons_up.png" "sprite_buttons_up" > buttons_up.txt
 SpriteMaker.exe "../images/buttons_down.png" "sprite_buttons_down" > buttons_down.txt
+SpriteMaker.exe "../images/buttons_esc.png" "sprite_buttons_esc" > buttons_esc.txt

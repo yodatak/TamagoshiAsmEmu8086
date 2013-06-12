@@ -70,17 +70,7 @@ mov sprite_pet, si
 mov sprite_pet_position_x, 10
 mov sprite_pet_position_y, 10
 
-lea si, sprite_happyness_normal
-mov sprite_happyness, si 
-
-lea si, sprite_hunger_normal
-mov sprite_hunger, si       
-
-lea si, sprite_discipline_normal
-mov sprite_discipline, si
-
-lea si, sprite_buttons_normal
-mov sprite_buttons, si
+call show_init_game
 
 jmp game_loop
 
@@ -90,46 +80,28 @@ sprite_pet DW ?
 sprite_pet_position_x DW ?
 sprite_pet_position_y DW ?
 
-sprite_happyness DW ?
-sprite_hunger DW ?
-sprite_discipline DW ?
+sprite_happyness_position_x equ 120
+sprite_happyness_position_y equ 10
+sprite_hunger_position_x equ 120
+sprite_hunger_position_y equ 40   
+sprite_discipline_position_x equ 120
+sprite_discipline_position_y equ 70
 
-sprite_buttons DW ?
+sprite_buttons_position_x equ 50
+sprite_buttons_position_y equ 100
+
+
+pet_happyness DW 1
+pet_hunger DW 1
+pet_discipline DW 1 
+
+
+reprimand_is_justified DW 0
+
 
 ;========= variables de fonctionnement  FIN  =============
 
 game_loop: 
-
-mov cx, 1
-mov dx, 1
-lea si, sprite_colors
-call show_sprite
-
-mov cx, sprite_pet_position_x ;position x du sprite
-mov dx, sprite_pet_position_y ;position y du sprite
-mov si, sprite_pet ;adresse du sprite
-call show_sprite ;appel de la procedure qui affiche le sprite        
-
-mov cx, 120 ;position x du sprite
-mov dx, 10 ;position y du sprite
-mov si, sprite_happyness ;adresse du sprite
-call show_sprite ;appel de la procedure qui affiche le sprite
-
-mov cx, 120 ;position x du sprite
-mov dx, 40 ;position y du sprite
-mov si, sprite_hunger ;adresse du sprite
-call show_sprite ;appel de la procedure qui affiche le sprite
-
-mov cx, 120 ;position x du sprite
-mov dx, 70 ;position y du sprite
-mov si, sprite_discipline ;adresse du sprite
-call show_sprite ;appel de la procedure qui affiche le sprite
-
-mov cx, 50 ;position x du sprite
-mov dx, 100 ;position y du sprite
-mov si, sprite_buttons ;adresse du sprite
-call show_sprite ;appel de la procedure qui affiche le sprite
-
 
 check_for_key:
 
@@ -160,7 +132,9 @@ jmp     game_loop
 ret
 
 
-
+;#gérer les events#
+;
+;call handle_events
 handle_events PROC    
     
     mov ah, 00h
@@ -185,41 +159,222 @@ handle_events PROC
     
 ;gestion en fonction de la touche :    
     
-    key_esc:
-    int 20h ;on arrête le jeu
+    key_esc:  
+        mov cx, sprite_buttons_position_x ;position x du sprite
+        mov dx, sprite_buttons_position_y ;position y du sprite
+        lea si, sprite_buttons_esc ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+        int 20h ;on arrête le jeu
     
     key_left:
-  
-    lea si, sprite_buttons_left
-    mov sprite_buttons, si  
-         
+        mov cx, sprite_buttons_position_x ;position x du sprite
+        mov dx, sprite_buttons_position_y ;position y du sprite
+        lea si, sprite_buttons_left ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+        call feed_the_pet_with_snack
+        
+        mov cx, sprite_buttons_position_x ;position x du sprite
+        mov dx, sprite_buttons_position_y ;position y du sprite
+        lea si, sprite_buttons_normal ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+           
     ret
     
     key_right:
-    
-    lea si, sprite_buttons_right
-    mov sprite_buttons, si 
-          
+        mov cx, sprite_buttons_position_x ;position x du sprite
+        mov dx, sprite_buttons_position_y ;position y du sprite
+        lea si, sprite_buttons_right ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+        call feed_the_pet_with_meal
+        
+        mov cx, sprite_buttons_position_x ;position x du sprite
+        mov dx, sprite_buttons_position_y ;position y du sprite
+        lea si, sprite_buttons_normal ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+              
     ret
     
     key_up:
+        mov cx, sprite_buttons_position_x ;position x du sprite
+        mov dx, sprite_buttons_position_y ;position y du sprite
+        lea si, sprite_buttons_up ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
     
-    lea si, sprite_buttons_up 
-    mov sprite_buttons, si        
-    
+        call play_with_the_pet
+        
+        mov cx, sprite_buttons_position_x ;position x du sprite
+        mov dx, sprite_buttons_position_y ;position y du sprite
+        lea si, sprite_buttons_normal ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+
     ret
                                 
     
     key_down:
-    
-    lea si, sprite_buttons_down
-    mov sprite_buttons, si  
-    
+        mov cx, sprite_buttons_position_x ;position x du sprite
+        mov dx, sprite_buttons_position_y ;position y du sprite
+        lea si, sprite_buttons_down ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+        call reprimand_the_pet
+        
+        mov cx, sprite_buttons_position_x ;position x du sprite
+        mov dx, sprite_buttons_position_y ;position y du sprite
+        lea si, sprite_buttons_normal ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+
     ret 
   
 handle_events ENDP
 
 
+feed_the_pet_with_snack PROC
+    add pet_hunger, 1
+    add pet_happyness, 1
+    call update_pet_states_sprites
+       
+    ret       
+feed_the_pet_with_snack ENDP
+
+
+feed_the_pet_with_meal PROC
+    add pet_hunger, 1
+    call update_pet_states_sprites
+       
+    ret
+feed_the_pet_with_meal ENDP
+
+
+play_with_the_pet PROC
+    sub pet_hunger, 1
+    add pet_happyness, 1
+    call update_pet_states_sprites
+       
+    ret
+play_with_the_pet ENDP
+
+
+reprimand_the_pet PROC
+    
+    ret
+reprimand_the_pet ENDP
+
+;#mettre à jour les sprites d'état du pet#
+;
+;call update_pet_states_sprites
+update_pet_states_sprites PROC
+    
+    ;====happyness====
+    
+    update_pet_states_sprites_happyness:
+        cmp pet_happyness, 0
+        je update_pet_states_sprites_happyness_bad
+        cmp pet_happyness, 1
+        je update_pet_states_sprites_happyness_normal
+        cmp pet_happyness, 2
+        je update_pet_states_sprites_happyness_good
+        
+    ret
+    
+    update_pet_states_sprites_happyness_bad:
+        mov cx, sprite_happyness_position_x ;position x du sprite
+        mov dx, sprite_happyness_position_y ;position y du sprite
+        lea si, sprite_happyness_bad ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+    jmp update_pet_states_sprites_hunger
+        
+    update_pet_states_sprites_happyness_normal:
+        mov cx, sprite_happyness_position_x ;position x du sprite
+        mov dx, sprite_happyness_position_y ;position y du sprite
+        lea si, sprite_happyness_normal ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+    jmp update_pet_states_sprites_hunger 
+        
+    update_pet_states_sprites_happyness_good:
+        mov cx, sprite_happyness_position_x ;position x du sprite
+        mov dx, sprite_happyness_position_y ;position y du sprite
+        lea si, sprite_happyness_good ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+    jmp update_pet_states_sprites_hunger
+        
+    ;====hunger====
+    
+    update_pet_states_sprites_hunger:
+        cmp pet_hunger, 0
+        je update_pet_states_sprites_hunger_bad
+        cmp pet_hunger, 1
+        je update_pet_states_sprites_hunger_normal
+        cmp pet_hunger, 2
+        je update_pet_states_sprites_hunger_good
+        
+    ret
+    
+    update_pet_states_sprites_hunger_bad:
+        mov cx, sprite_hunger_position_x ;position x du sprite
+        mov dx, sprite_hunger_position_y ;position y du sprite
+        lea si, sprite_hunger_bad ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+    jmp update_pet_states_sprites_discipline
+        
+    update_pet_states_sprites_hunger_normal:
+        mov cx, sprite_hunger_position_x ;position x du sprite
+        mov dx, sprite_hunger_position_y ;position y du sprite
+        lea si, sprite_hunger_normal ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+    jmp update_pet_states_sprites_discipline 
+        
+    update_pet_states_sprites_hunger_good:
+        mov cx, sprite_hunger_position_x ;position x du sprite
+        mov dx, sprite_hunger_position_y ;position y du sprite
+        lea si, sprite_hunger_good ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+    jmp update_pet_states_sprites_discipline
+        
+    ;====discipline====
+    
+    update_pet_states_sprites_discipline:
+        cmp pet_discipline, 0
+        je update_pet_states_sprites_discipline_bad
+        cmp pet_discipline, 1
+        je update_pet_states_sprites_discipline_normal
+        cmp pet_discipline, 2
+        je update_pet_states_sprites_discipline_good
+        
+    ret
+    
+    update_pet_states_sprites_discipline_bad:
+        mov cx, sprite_discipline_position_x ;position x du sprite
+        mov dx, sprite_discipline_position_y ;position y du sprite
+        lea si, sprite_discipline_bad ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+    ret
+        
+    update_pet_states_sprites_discipline_normal:
+        mov cx, sprite_discipline_position_x ;position x du sprite
+        mov dx, sprite_discipline_position_y ;position y du sprite
+        lea si, sprite_discipline_normal ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+    ret 
+        
+    update_pet_states_sprites_discipline_good:
+        mov cx, sprite_discipline_position_x ;position x du sprite
+        mov dx, sprite_discipline_position_y ;position y du sprite
+        lea si, sprite_discipline_good ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+    ret 
+update_pet_states_sprites ENDP    
 
 
 ;#afficher un pixel#
@@ -308,7 +463,8 @@ include tools/buttons_normal.txt
 include tools/buttons_left.txt
 include tools/buttons_right.txt
 include tools/buttons_up.txt
-include tools/buttons_down.txt
+include tools/buttons_down.txt   
+include tools/buttons_esc.txt
                        
 
 
@@ -332,12 +488,12 @@ show_sprite PROC
     mov dx, [di+0] ;sprite_y
     add dx, w.[si-2] ;sprite_h
     
-    rows:     
+    show_sprite_rows:     
         dec dx        
         
         mov cx, w.[di+2] ;sprite_x     
         add cx, w.[si-4] ;sprite_w
-        columns:
+        show_sprite_columns:
             dec cx   
             dec bx
             
@@ -346,10 +502,10 @@ show_sprite PROC
             int 10h  
             
             cmp cx, w.[di+2] ;sprite_x
-            ja columns
+            ja show_sprite_columns
      
         cmp dx, w.[di+0] ;sprite_y
-        ja rows 
+        ja show_sprite_rows 
         
     pop dx
     pop cx
@@ -357,6 +513,107 @@ show_sprite PROC
     ret
 show_sprite ENDP
 
+;#effacer un sprite#
+;
+;cx position x
+;dx position y
+;si adresse des pixels
+;
+;call clear_sprite
+clear_sprite PROC
+    push cx ;sprite_x
+    push dx ;sprite_y
+    mov di, sp
+                      
+    mov dx, [di+0] ;sprite_y
+    add dx, w.[si-2] ;sprite_h
+    
+    clear_sprite_rows:     
+        dec dx        
+        
+        mov cx, w.[di+2] ;sprite_x     
+        add cx, w.[si-4] ;sprite_w
+        clear_sprite_columns:
+            dec cx
+            
+            mov al, 00h ;pixel_color
+            mov ah, 0ch ;put pixel
+            int 10h  
+            
+            cmp cx, w.[di+2] ;sprite_x
+            ja clear_sprite_columns
+     
+        cmp dx, w.[di+0] ;sprite_y
+        ja clear_sprite_rows 
+        
+    pop dx
+    pop cx
+    
+    ret
+clear_sprite ENDP
 
+;#effacer l'écran#
+;
+;call clear_screen
+clear_screen PROC
+    mov dx, 199
+    
+    clear_screen_rows:     
+        dec dx        
+        
+        mov cx, 319
+        
+        clear_screen_columns:
+            dec cx 
+            
+            mov al, 00h ;pixel_color
+            mov ah, 0ch ;put pixel
+            int 10h  
+            
+            cmp cx, 0
+            ja clear_screen_columns
+     
+        cmp dx, 0
+        ja clear_screen_rows
+    
+    ret
+clear_screen ENDP
+
+
+
+show_init_game PROC
+        
+    mov cx, 1
+    mov dx, 1
+    lea si, sprite_colors
+    call show_sprite
+    
+    mov cx, sprite_pet_position_x ;position x du sprite
+    mov dx, sprite_pet_position_y ;position y du sprite
+    mov si, sprite_pet ;adresse du sprite
+    call show_sprite ;appel de la procedure qui affiche le sprite        
+    
+    mov cx, sprite_happyness_position_x ;position x du sprite
+    mov dx, sprite_happyness_position_y ;position y du sprite
+    lea si, sprite_happyness_normal ;adresse du sprite
+    call show_sprite ;appel de la procedure qui affiche le sprite
+    
+    mov cx, sprite_hunger_position_x ;position x du sprite
+    mov dx, sprite_hunger_position_y ;position y du sprite
+    lea si, sprite_hunger_normal ;adresse du sprite
+    call show_sprite ;appel de la procedure qui affiche le sprite
+    
+    mov cx, sprite_discipline_position_x ;position x du sprite
+    mov dx, sprite_discipline_position_y ;position y du sprite
+    lea si, sprite_discipline_normal ;adresse du sprite
+    call show_sprite ;appel de la procedure qui affiche le sprite
+    
+    mov cx, sprite_buttons_position_x ;position x du sprite
+    mov dx, sprite_buttons_position_y ;position y du sprite
+    lea si, sprite_buttons_normal ;adresse du sprite
+    call show_sprite ;appel de la procedure qui affiche le sprite
+    
+    ret
+show_init_game ENDP
 
 END
