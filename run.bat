@@ -1,1 +1,1 @@
-DOSBox.exe pixel.com
+DOSBox.exe -conf dos_not_fullscreen.conf pixel.com
