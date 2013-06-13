@@ -72,8 +72,8 @@ int 10h     ; set it!
 
 lea si, sprite_pikamini
 mov sprite_pet, si
-mov sprite_pet_position_x, 10
-mov sprite_pet_position_y, 10
+mov sprite_pet_position_x, 40
+mov sprite_pet_position_y, 40
 
 call show_init_game
 
@@ -275,6 +275,18 @@ play_with_the_pet_loose_key DB ?
 play_with_the_pet_win_move DW ?
 
 play_with_the_pet PROC
+    mov cx, sprite_pet_position_x ;position x du sprite
+    mov dx, sprite_pet_position_y ;position y du sprite
+    mov si, sprite_pet ;adresse du sprite
+    call clear_sprite ;appel de la procedure qui efface le sprite
+    
+    mov sprite_pet_position_x, 40 ;on remet le pet au milieu
+    
+    mov cx, sprite_pet_position_x ;position x du sprite
+    mov dx, sprite_pet_position_y ;position y du sprite
+    mov si, sprite_pet ;adresse du sprite
+    call show_sprite ;appel de la procedure qui affiche le sprite
+    
     mov ah, 2Ch
     int 21h
     
