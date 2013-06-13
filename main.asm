@@ -239,6 +239,7 @@ handle_events ENDP
 feed_the_pet_with_snack PROC
     add pet_hunger, 1
     add pet_happyness, 1
+    sub pet_discipline, 1
     call update_pet_states_sprites
     
     mov ah, 2Ch
@@ -265,6 +266,23 @@ feed_the_pet_with_snack ENDP
 feed_the_pet_with_meal PROC
     add pet_hunger, 1
     call update_pet_states_sprites
+    
+    mov ah, 2Ch
+    int 21h
+    mov wait_time_hm, cx
+    mov wait_time_sc, dx
+    
+    add wait_time_sc, 0100h
+    
+    feed_the_pet_with_meal_wait:
+        mov ah, 2Ch
+        int 21h
+        
+        cmp cx, wait_time_hm
+        jb  feed_the_pet_with_meal_wait  
+
+        cmp dx, wait_time_sc   
+        jb  feed_the_pet_with_meal_wait
        
     ret
 feed_the_pet_with_meal ENDP
@@ -349,13 +367,36 @@ reprimand_the_pet PROC
         mov pet_happyness, 1
         sub pet_discipline, 1
         call update_pet_states_sprites  
-    ret    
+    
+    jmp reprimand_the_pet_end   
     
     reprimand_the_pet_justified:
+        mov reprimand_is_justified, 0
+        
         sub pet_happyness, 1
-        add pet_discipline, 1         
+        add pet_discipline, 1
+        
+    reprimand_the_pet_end:         
         call update_pet_states_sprites
-    ret
+    
+        mov ah, 2Ch
+        int 21h
+        mov wait_time_hm, cx
+        mov wait_time_sc, dx
+        
+        add wait_time_sc, 0100h
+        
+        feed_the_pet_with_meal_wait:
+            mov ah, 2Ch
+            int 21h
+            
+            cmp cx, wait_time_hm
+            jb  feed_the_pet_with_meal_wait  
+    
+            cmp dx, wait_time_sc   
+            jb  feed_the_pet_with_meal_wait
+            
+    ret    
 reprimand_the_pet ENDP
 
 
