@@ -21,8 +21,8 @@ msg DB "==== TamagoB1 ====", 0dh,0ah
 	DB "car il requiert une vitesse d'execution que celui-ci ne peut fournir", 0dh,0ah, 0ah
 	DB "Si vous souhaitez faire tourner ce jeu,", 0dh,0ah
 	DB "utilisez le fichier run.bat fourni avec le jeu.", 0dh,0ah, 0ah
-	DB "vous pouvez controler le pet avec les fleches <^v>", 0dh,0ah		
-	DB "^   JOUER: deviner si le pet va aller a gauche < ou a droite >", 0dh,0ah
+	DB "vous pouvez controler le familier avec les fleches <^v>", 0dh,0ah		
+	DB "^   JOUER: deviner si le familier va aller a gauche < ou a droite >", 0dh,0ah
 	DB "v   REPRIMANDER", 0dh,0ah
 	DB "<   DONNER UN SNACK", 0dh,0ah
 	DB ">   DONNER UN REPAS", 0dh,0ah
@@ -61,7 +61,9 @@ game_init:
 ;mov     ch, 2bh
 ;mov     cl, 0bh
 ;int     10h      
-
+;hide mouse cursor
+;mov ax, 2
+;int 33h
 ; ------ passage en mode pixel ------
 
 mov ah, 0   ; set display mode function.
@@ -264,7 +266,7 @@ feed_the_pet_with_snack ENDP
 
 
 feed_the_pet_with_meal PROC
-    add pet_hunger, 1
+    add pet_hunger, 2
     call update_pet_states_sprites
     
     mov ah, 2Ch
@@ -305,11 +307,26 @@ play_with_the_pet PROC
     mov si, sprite_pet ;adresse du sprite
     call show_sprite ;appel de la procedure qui affiche le sprite
     
+    cmp pet_discipline, 1
+    jne play_with_the_pet_he_wants_to_play
+    
     mov ah, 2Ch
     int 21h
     
-    test dl, 1 ;teste si le centième de seconde est impair
-    jz  play_with_the_pet_set_win_key_to_right
+    test dl, 00000011b ;teste si les centième de seconde sont à 11
+    jz  play_with_the_pet_he_wants_to_play
+    
+    ;si le pet refuse de jouer
+    mov reprimand_is_justified, 1
+    
+    ret    
+    
+    play_with_the_pet_he_wants_to_play:
+        mov ah, 2Ch
+        int 21h
+        
+        test dl, 1 ;teste si le centième de seconde est impair
+        jz  play_with_the_pet_set_win_key_to_right
     
     play_with_the_pet_set_win_key_to_left:
         mov play_with_the_pet_win_key, 4Bh ;flèche gauche
@@ -364,15 +381,14 @@ reprimand_the_pet PROC
     je reprimand_the_pet_justified
     
     reprimand_the_pet_unjustified:
-        mov pet_happyness, 1
+        sub pet_happyness, 2
         sub pet_discipline, 1
         call update_pet_states_sprites  
     
     jmp reprimand_the_pet_end   
     
     reprimand_the_pet_justified:
-        mov reprimand_is_justified, 0
-        
+        sub reprimand_is_justified, 1        
         sub pet_happyness, 1
         add pet_discipline, 1
         
@@ -386,15 +402,15 @@ reprimand_the_pet PROC
         
         add wait_time_sc, 0100h
         
-        feed_the_pet_with_meal_wait:
+        reprimand_the_pet_wait:
             mov ah, 2Ch
             int 21h
             
             cmp cx, wait_time_hm
-            jb  feed_the_pet_with_meal_wait  
+            jb  reprimand_the_pet_wait  
     
             cmp dx, wait_time_sc   
-            jb  feed_the_pet_with_meal_wait
+            jb  reprimand_the_pet_wait
             
     ret    
 reprimand_the_pet ENDP
@@ -654,7 +670,56 @@ show_sprite PROC
     pop cx
     
     ret
-show_sprite ENDP
+show_sprite ENDP 
+
+;#afficher un sprite#
+;
+;cx position x
+;dx position y
+;si adresse des pixels
+;
+;call show_inverted_sprite
+
+show_inverted_sprite PROC
+    push cx ;sprite_x
+    push dx ;sprite_y
+    mov di, sp
+    
+    mov ax, w.[si-4] ;sprite_w
+    mul w.[si-2] ;sprite_h
+    mov bx, ax ;nombre total de pixels
+                      
+    mov dx, [di+0] ;sprite_y
+    add dx, w.[si-2] ;sprite_h
+    
+    show_inverted_sprite_rows:     
+        dec dx        
+        
+        mov cx, w.[di+2] ;sprite_x     
+        add cx, w.[si-4] ;sprite_w
+        sub cx, 1
+        show_inverted_sprite_columns:
+            inc cx   
+            dec bx
+            
+            mov al, b.[si+bx] ;pixel_color
+            mov ah, 0ch ;put pixel
+            int 10h  
+            
+            mov ax, w.[di+2] ;sprite_x
+            add ax, w.[si-4] ;sprite_h
+            sub ax, 1
+            cmp cx, ax
+            jb show_inverted_sprite_columns
+     
+        cmp dx, w.[di+0] ;sprite_y
+        ja show_inverted_sprite_rows 
+        
+    pop dx
+    pop cx
+    
+    ret
+show_inverted_sprite ENDP
 
 ;#effacer un sprite#
 ;
@@ -781,22 +846,31 @@ move_the_pet PROC
         
         move_the_pet_to_right:
             inc sprite_pet_position_x
+            
+            push cx
         
-        jmp move_the_pet_show_the_pet
+            mov cx, sprite_pet_position_x ;position x du sprite
+            mov dx, sprite_pet_position_y ;position y du sprite
+            mov si, sprite_pet ;adresse du sprite
+            call show_inverted_sprite ;appel de la procedure qui affiche le sprite
+            
+            pop cx
+        
+        jmp move_the_pet_compare_target
         
         move_the_pet_to_left:
             dec sprite_pet_position_x
+            
+            push cx
         
-        move_the_pet_show_the_pet:
+            mov cx, sprite_pet_position_x ;position x du sprite
+            mov dx, sprite_pet_position_y ;position y du sprite
+            mov si, sprite_pet ;adresse du sprite
+            call show_sprite ;appel de la procedure qui affiche le sprite
+            
+            pop cx
         
-        push cx
-        
-        mov cx, sprite_pet_position_x ;position x du sprite
-        mov dx, sprite_pet_position_y ;position y du sprite
-        mov si, sprite_pet ;adresse du sprite
-        call show_sprite ;appel de la procedure qui affiche le sprite
-        
-        pop cx 
+        move_the_pet_compare_target:            
         
         cmp cx, sprite_pet_position_x ;si l'objectif est atteint
         je move_the_pet_end
