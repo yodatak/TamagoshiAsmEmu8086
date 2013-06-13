@@ -19,7 +19,6 @@ local.properties
 *.debug
 *.list
 *.symbol
-*.com
 
 # External tool builders
 .externalToolBuilders/
