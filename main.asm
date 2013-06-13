@@ -11,23 +11,24 @@ jmp     start
 
 ; ------ data section ------
 
-wait_time dw    0
+wait_time_hm DW 0
+wait_time_sc DW 0
 
 
 ; message de bienvenue
-msg db "==== TamagoB1 ====", 0dh,0ah
-	db "Ce projet ne peut tourner dans l'emulateur", 0dh,0ah
-	db "car il requiert une vitesse d'execution que celui-ci ne peut fournir", 0dh,0ah, 0ah
-	db "Si vous souhaitez faire tourner ce jeu,", 0dh,0ah
-	db "utilisez le fichier run.bat fourni avec le jeu.", 0dh,0ah, 0ah
-	db "vous pouvez controler le pet avec les fleches <^v>", 0dh,0ah		
-	db "^   JOUER: deviner si le pet va aller a gauche < ou a droite >", 0dh,0ah
-	db "v   REPRIMANDER", 0dh,0ah
-	db "<   DONNER UN SNACK", 0dh,0ah
-	db ">   DONNER UN REPAS", 0dh,0ah
-	db "Esc QUITTER", 0dh,0ah
-	db "====================", 0dh,0ah, 0ah
-	db "appuyez sur n'importe quelle touche pour demarrer...$"
+msg DB "==== TamagoB1 ====", 0dh,0ah
+	DB "Ce projet ne peut tourner dans l'emulateur", 0dh,0ah
+	DB "car il requiert une vitesse d'execution que celui-ci ne peut fournir", 0dh,0ah, 0ah
+	DB "Si vous souhaitez faire tourner ce jeu,", 0dh,0ah
+	DB "utilisez le fichier run.bat fourni avec le jeu.", 0dh,0ah, 0ah
+	DB "vous pouvez controler le pet avec les fleches <^v>", 0dh,0ah		
+	DB "^   JOUER: deviner si le pet va aller a gauche < ou a droite >", 0dh,0ah
+	DB "v   REPRIMANDER", 0dh,0ah
+	DB "<   DONNER UN SNACK", 0dh,0ah
+	DB ">   DONNER UN REPAS", 0dh,0ah
+	DB "Esc QUITTER", 0dh,0ah
+	DB "====================", 0dh,0ah, 0ah
+	DB "appuyez sur n'importe quelle touche pour demarrer...$"
 
 ; ------ code section ------
 
@@ -239,7 +240,24 @@ feed_the_pet_with_snack PROC
     add pet_hunger, 1
     add pet_happyness, 1
     call update_pet_states_sprites
-       
+    
+    mov ah, 2Ch
+    int 21h
+    mov wait_time_hm, cx
+    mov wait_time_sc, dx
+    
+    add wait_time_sc, 0100h
+    
+    feed_the_pet_with_snack_wait:
+        mov ah, 2Ch
+        int 21h
+        
+        cmp cx, wait_time_hm
+        jb  feed_the_pet_with_snack_wait  
+
+        cmp dx, wait_time_sc   
+        jb  feed_the_pet_with_snack_wait    
+        
     ret       
 feed_the_pet_with_snack ENDP
 
@@ -252,11 +270,61 @@ feed_the_pet_with_meal PROC
 feed_the_pet_with_meal ENDP
 
 
+play_with_the_pet_win_key DB ?
+play_with_the_pet_loose_key DB ?
+play_with_the_pet_win_move DW ?
+
 play_with_the_pet PROC
-    sub pet_hunger, 1
-    add pet_happyness, 1
-    call update_pet_states_sprites
+    mov ah, 2Ch
+    int 21h
+    
+    test dl, 1 ;teste si le centième de seconde est impair
+    jz  play_with_the_pet_set_win_key_to_right
+    
+    play_with_the_pet_set_win_key_to_left:
+        mov play_with_the_pet_win_key, 4Bh ;flèche gauche
+        mov play_with_the_pet_loose_key, 4Dh ;flèche droite
+        mov play_with_the_pet_win_move, -10    
+    
+    jmp play_with_the_pet_wait_key
+    
+    play_with_the_pet_set_win_key_to_right:
+        mov play_with_the_pet_win_key, 4Dh ;flèche droite
+        mov play_with_the_pet_loose_key, 4Bh ;flèche gauche
+        mov play_with_the_pet_win_move, 10  
+    
+    play_with_the_pet_wait_key:
+        mov ah, 01h
+        int 16h ;teste si une touche est enfoncée
+        jz  play_with_the_pet_wait_key
+    
+        mov ah, 00h
+        int 16h ;récupère la touche enfoncée
+        
+        cmp ah, play_with_the_pet_win_key
+        je  play_with_the_pet_win
+            
+        cmp ah, play_with_the_pet_loose_key
+        je  play_with_the_pet_loose
+        
+    jmp play_with_the_pet_wait_key
+    
+    play_with_the_pet_win:
+        sub pet_hunger, 1
+        add pet_happyness, 1
        
+    jmp play_with_the_pet_move_the_pet      
+    
+    play_with_the_pet_loose:
+        sub pet_hunger, 1             
+        
+    play_with_the_pet_move_the_pet:
+        mov bx, 2 ;*65000µs entre chaque pixel
+        mov cx, play_with_the_pet_win_move ;déplacement en x        
+        call move_the_pet        
+        
+    call update_pet_states_sprites
+        
     ret
 play_with_the_pet ENDP
 
@@ -277,6 +345,8 @@ reprimand_the_pet PROC
         call update_pet_states_sprites
     ret
 reprimand_the_pet ENDP
+
+
 
 ;#mettre à jour les sprites d'état du pet#
 ;
@@ -634,6 +704,64 @@ show_init_game PROC
     call show_sprite ;appel de la procedure qui affiche le sprite
     
     ret
-show_init_game ENDP
+show_init_game ENDP 
 
+
+move_the_pet_wait_time DW ?
+
+move_the_pet PROC
+    mov move_the_pet_wait_time, bx
+    
+    add cx, sprite_pet_position_x 
+    push cx
+    
+    move_the_pet_begin:
+        mov cx, sprite_pet_position_x ;position x du sprite
+        mov dx, sprite_pet_position_y ;position y du sprite
+        mov si, sprite_pet ;adresse du sprite
+        call clear_sprite ;appel de la procedure qui efface le sprite
+        
+        pop cx
+        
+        cmp sprite_pet_position_x, cx
+        ja  move_the_pet_to_left
+        
+        move_the_pet_to_right:
+            inc sprite_pet_position_x
+        
+        jmp move_the_pet_show_the_pet
+        
+        move_the_pet_to_left:
+            dec sprite_pet_position_x
+        
+        move_the_pet_show_the_pet:
+        
+        push cx
+        
+        mov cx, sprite_pet_position_x ;position x du sprite
+        mov dx, sprite_pet_position_y ;position y du sprite
+        mov si, sprite_pet ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+        pop cx 
+        
+        cmp cx, sprite_pet_position_x ;si l'objectif est atteint
+        je move_the_pet_end
+        
+        push cx       
+        
+        mov cx, move_the_pet_wait_time
+        mov dx, 0
+        mov ah, 86h
+        int 15h
+        
+    jmp move_the_pet_begin
+    
+    move_the_pet_end:
+    
+    ret        
+move_the_pet ENDP
+               
+               
+               
 END
