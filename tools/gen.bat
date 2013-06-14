@@ -1,8 +1,7 @@
 ::les sprites des différentes évolutions
-::SpriteMaker.exe "../images/pikaegg.jpg" "sprite_pikaegg" > pikaegg.txt
+SpriteMaker.exe "../images/pikaoeuf.png" "sprite_pikaoeuf" > pikaoeuf.txt
 SpriteMaker.exe "../images/pikamini.png" "sprite_pikamini" > pikamini.txt
-::SpriteMaker.exe "../images/pika.jpg" "sprite_pika" > pika.txt
-::SpriteMaker.exe "../images/rai.jpg" "sprite_rai" > rai.txt
+SpriteMaker.exe "../images/pikaevil.png" "sprite_pikaevil" > pikaevil.txt
 
 ::les sprites du happyness
 SpriteMaker.exe "../images/happyness_good.png" "sprite_happyness_good" > happyness_good.txt
