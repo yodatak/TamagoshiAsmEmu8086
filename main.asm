@@ -39,7 +39,7 @@ mov dx, offset msg
 mov ah, 9 
 int 21h
 
-
+call pokemon
 ;on attend une touche
 wait_for_key_press:
 mov ah, 01h
@@ -139,15 +139,16 @@ jmp     game_loop
 ret
 
 
-;#gérer les events#
+;#gerer les events#
 ;
 ;call handle_events
 handle_events PROC    
+    call bip
     
     mov ah, 00h
     int 16h
         
-    cmp al, 1bh    ; touche échap
+    cmp al, 1bh    ; touche Echap
     je  key_esc 
                                    
     cmp ah, 4Bh    ; fleche gauche
@@ -172,7 +173,7 @@ handle_events PROC
         lea si, sprite_buttons_esc ;adresse du sprite
         call show_sprite ;appel de la procedure qui affiche le sprite
         
-        int 20h ;on arrête le jeu
+        int 20h ;on arrete le jeu
     
     key_left:
         mov cx, sprite_buttons_position_x ;position x du sprite
@@ -411,7 +412,7 @@ reprimand_the_pet PROC
     je reprimand_the_pet_justified
     
     reprimand_the_pet_unjustified:
-        mov pet_happiness, 1
+        mov pet_happyness, 1
         sub pet_discipline, 1           
     
     jmp reprimand_the_pet_end   
@@ -591,10 +592,6 @@ update_pet_states_sprites ENDP
 ;mov ah, 0ch
 ;int 10h                      
 
-sprite_colors_w DW 10h
-sprite_colors_h DW 01h
-sprite_colors DB 00h,01h,02h,03h,04h,05h,06h,07h,08h,09h,0ah,0bh,0ch,0dh,0eh,0fh
-
 
 sprite_oeuf_w DW 020h
 sprite_oeuf_h DW 020h
@@ -634,6 +631,7 @@ sprite_oeuf_line_1f DB 0fh,0fh,0fh,0fh,0fh,0fh,0fh,0fh,0fh,0fh,0fh,0fh,0fh,0fh,0
 include tools/pikamini.txt
 
 
+
 include tools/happyness_good.txt
 include tools/happyness_normal.txt
 include tools/happyness_bad.txt
@@ -655,6 +653,7 @@ include tools/buttons_down.txt
 include tools/buttons_esc.txt
                        
 
+include sound.asm
 
 ;#afficher un sprite#
 ;
@@ -819,10 +818,6 @@ clear_screen ENDP
 
 show_init_game PROC
         
-    mov cx, 1
-    mov dx, 1
-    lea si, sprite_colors
-    call show_sprite
     
     mov cx, sprite_pet_position_x ;position x du sprite
     mov dx, sprite_pet_position_y ;position y du sprite
@@ -916,7 +911,27 @@ move_the_pet PROC
     
     ret        
 move_the_pet ENDP
-               
-               
+
+bip PROC               
+    mov al, 0b6h
+    out 43h, al
+    mov al, 0c9h
+    out 42h, al
+    mov al, 11h
+    out 42h, al
+    in al, 61h 
+    mov ah, al
+    or al, 00000011b
+    out 61h, al 
+    call delay
+    mov al , ah
+    out 61h, al 
+    delay:
+    mov cx, 00h ; 000f4240h = 1,000,000
+    mov dx, 4240h
+    mov ah, 86h
+    int 15h
+    ret 
+bip ENDP              
                
 END
