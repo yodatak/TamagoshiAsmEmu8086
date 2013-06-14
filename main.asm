@@ -239,10 +239,25 @@ handle_events ENDP
 
 
 feed_the_pet_with_snack PROC
-    add pet_hunger, 1
-    add pet_happyness, 1
-    sub pet_discipline, 1
-    call update_pet_states_sprites
+    cmp pet_discipline, 1
+    jne feed_the_pet_with_snack_he_wants_to_eat
+    
+    mov ah, 2Ch
+    int 21h
+    
+    test dl, 00000011b ;teste si les centième de seconde sont à 11
+    jz  feed_the_pet_with_snack_he_wants_to_eat
+    
+    ;si le pet refuse de manger
+    mov reprimand_is_justified, 1
+    
+    jmp feed_the_pet_with_snack_wait
+    
+    feed_the_pet_with_snack_he_wants_to_eat:
+        add pet_hunger, 1
+        add pet_happyness, 1
+        sub pet_discipline, 1
+        call update_pet_states_sprites
     
     mov ah, 2Ch
     int 21h
@@ -266,8 +281,23 @@ feed_the_pet_with_snack ENDP
 
 
 feed_the_pet_with_meal PROC
-    add pet_hunger, 2
-    call update_pet_states_sprites
+    cmp pet_discipline, 1
+    jne feed_the_pet_with_meal_he_wants_to_eat
+    
+    mov ah, 2Ch
+    int 21h
+    
+    test dl, 00000011b ;teste si les centième de seconde sont à 11
+    jz  feed_the_pet_with_meal_he_wants_to_eat
+    
+    ;si le pet refuse de manger
+    mov reprimand_is_justified, 1
+    
+    jmp feed_the_pet_with_meal_wait
+    
+    feed_the_pet_with_meal_he_wants_to_eat:
+        add pet_hunger, 2
+        call update_pet_states_sprites
     
     mov ah, 2Ch
     int 21h
@@ -381,14 +411,13 @@ reprimand_the_pet PROC
     je reprimand_the_pet_justified
     
     reprimand_the_pet_unjustified:
-        sub pet_happyness, 2
-        sub pet_discipline, 1
-        call update_pet_states_sprites  
+        mov pet_happiness, 1
+        sub pet_discipline, 1           
     
     jmp reprimand_the_pet_end   
     
     reprimand_the_pet_justified:
-        sub reprimand_is_justified, 1        
+        mov reprimand_is_justified, 0        
         sub pet_happyness, 1
         add pet_discipline, 1
         
@@ -695,8 +724,7 @@ show_inverted_sprite PROC
     show_inverted_sprite_rows:     
         dec dx        
         
-        mov cx, w.[di+2] ;sprite_x     
-        add cx, w.[si-4] ;sprite_w
+        mov cx, w.[di+2] ;sprite_x
         sub cx, 1
         show_inverted_sprite_columns:
             inc cx   
