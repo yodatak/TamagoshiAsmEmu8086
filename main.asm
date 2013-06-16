@@ -463,14 +463,17 @@ reprimand_the_pet ENDP
 
 
 
+handle_evolution_green_count DW 0
+handle_evolution_red_count DW 0
+handle_evolution_level DW 1 ;actuellement il y a 1 évolution
 
-
-
-
-handle_evolution PROC 
+handle_evolution PROC
+    
+    cmp handle_evolution_level, 0     ;si plus d'évolution possible
+    je handle_evolution_no_evolution  ;pas de traitement
     
     mov ah, 2Ch
-    int 21h 
+    int 21h ;on récupère l'heure 
     
     cmp cx, evolution_timer_hm
     jb handle_evolution_no_evolution
@@ -480,11 +483,47 @@ handle_evolution PROC
     jb handle_evolution_no_evolution
     
     handle_evolution_evolution_ok:
-        lea si, sprite_pikaevil
-        mov sprite_pet, si    
+        
+        mov cx, sprite_pet_position_x ;position x du sprite
+        mov dx, sprite_pet_position_y ;position y du sprite
+        mov si, sprite_pet ;adresse du sprite
+        call clear_sprite ;appel de la procedure qui efface le sprite
+        
+        cmp handle_evolution_level, 1
+        je handle_evolution_1 
+        
+    handle_evolution_1:
+        mov bx, handle_evolution_red_count
+        cmp handle_evolution_green_count, bx
+        ja handle_evolution_1_good
+        
+        handle_evolution_1_evil:
+                                 
+            lea si, sprite_pikaevil
+            mov sprite_pet, si
+        
+        jmp handle_evolution_show_new_sprite
+        
+        handle_evolution_1_good:
+            
+            lea si, sprite_pikamini
+            mov sprite_pet, si
+                                         
+        
+    handle_evolution_show_new_sprite:       
+    
+        mov cx, sprite_pet_position_x ;position x du sprite
+        mov dx, sprite_pet_position_y ;position y du sprite
+        mov si, sprite_pet ;adresse du sprite
+        call show_sprite ;appel de la procedure qui affiche le sprite
+        
+        add evolution_timer_hm, 1
+        dec handle_evolution_level
+        
     ret
     
     handle_evolution_no_evolution:
+        
     ret
     
 handle_evolution ENDP
@@ -515,6 +554,8 @@ update_pet_states_sprites PROC
     
     update_pet_states_sprites_happyness_bad:
         mov pet_happyness, 1
+        inc handle_evolution_red_count
+        
         mov cx, sprite_happyness_position_x ;position x du sprite
         mov dx, sprite_happyness_position_y ;position y du sprite
         lea si, sprite_happyness_bad ;adresse du sprite
@@ -532,6 +573,8 @@ update_pet_states_sprites PROC
         
     update_pet_states_sprites_happyness_good:
         mov pet_happyness, 3
+        inc handle_evolution_green_count
+        
         mov cx, sprite_happyness_position_x ;position x du sprite
         mov dx, sprite_happyness_position_y ;position y du sprite
         lea si, sprite_happyness_good ;adresse du sprite
@@ -551,6 +594,7 @@ update_pet_states_sprites PROC
     
     update_pet_states_sprites_hunger_bad:
         mov pet_hunger, 1
+        inc handle_evolution_red_count
         
         mov cx, sprite_hunger_position_x ;position x du sprite
         mov dx, sprite_hunger_position_y ;position y du sprite
@@ -569,6 +613,7 @@ update_pet_states_sprites PROC
         
     update_pet_states_sprites_hunger_good:
         mov pet_hunger, 3
+        inc handle_evolution_green_count
         
         mov cx, sprite_hunger_position_x ;position x du sprite
         mov dx, sprite_hunger_position_y ;position y du sprite
@@ -589,6 +634,7 @@ update_pet_states_sprites PROC
     
     update_pet_states_sprites_discipline_bad:
         mov pet_discipline, 1
+        inc handle_evolution_red_count
         
         mov cx, sprite_discipline_position_x ;position x du sprite
         mov dx, sprite_discipline_position_y ;position y du sprite
@@ -607,6 +653,7 @@ update_pet_states_sprites PROC
         
     update_pet_states_sprites_discipline_good:
         mov pet_discipline, 3
+        inc handle_evolution_green_count
         
         mov cx, sprite_discipline_position_x ;position x du sprite
         mov dx, sprite_discipline_position_y ;position y du sprite
@@ -941,10 +988,10 @@ bip PROC ;super son !
     mov ah, al
     or al, 00000011b
     out 61h, al 
-    call delay
+    call bip_delay
     mov al , ah
     out 61h, al 
-    delay:
+    bip_delay:
     mov cx, 00h ; 000f4240h = 1,000,000
     mov dx, 4240h
     mov ah, 86h
